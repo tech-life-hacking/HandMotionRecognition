@@ -7,6 +7,7 @@ import cv2
 import handmotion
 
 tracker = HandTracker()
+framesize = tracker.frame_size
 renderer = HandTrackerRenderer(tracker)
 hands = []
 class_names = ['BYE', 'NON', 'CIRCLE', 'POINTCIRCLE', 'PAPER']
@@ -19,7 +20,7 @@ while True:
     if frame is None: break
     # Render frame
     frame = renderer.draw(frame, hands, bag)
-    motionsclass = handmotions.run(hands)
+    motionsclass = handmotions.run(hands, framesize)
     cv2.putText(frame, motionsclass, (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 255), 2)
     cv2.imshow("HandTracker", frame)
     key = cv2.waitKey(1)

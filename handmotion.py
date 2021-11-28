@@ -11,10 +11,10 @@ class HandMotion():
         # self.class_names = ['BYE', 'COMEON', 'PUSH', 'STONEPAPER', 'SWIPE']
         self.class_names = class_names
 
-    def input(self, hands):
+    def input(self, hands, framesize):
         for hand in hands:
             self.handmotion = np.delete(self.handmotion, 0, 0)
-            self.handmotion = np.concatenate([self.handmotion, np.concatenate([np.array(hand.landmarks_resized)[:,0].reshape(21), np.array(hand.landmarks_resized)[:,1].reshape(21)], axis=0).reshape(1, 42)], axis=0)
+            self.handmotion = np.concatenate([self.handmotion, np.concatenate([np.array(hand.landmarks / framesize)[:,0].reshape(21), np.array(hand.landmarks / framesize)[:,1].reshape(21)], axis=0).reshape(1, 42)], axis=0)
 
     def predict(self):
         self.interprefer.set_tensor(self.input_details[0]['index'], self.handmotion.reshape(1, 50, 42).astype(np.float32))
@@ -22,7 +22,7 @@ class HandMotion():
         output_data = self.interprefer.get_tensor(self.output_details[0]['index'])
         return self.class_names[np.argmax(output_data)]
 
-    def run(self, hands):
-        self.input(hands)
+    def run(self, hands, framesize):
+        self.input(hands, framesize)
         return self.predict()
 
